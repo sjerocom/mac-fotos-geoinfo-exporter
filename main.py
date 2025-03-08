@@ -1,5 +1,9 @@
-def main():
-    print("Hello World! This is another test from Testbranch.")
+import logger
+
+# Logger verwenden
+logger = logger.setup_logger()
+
+
 
 if __name__ == "__main__":
-    main()
+    logger.info("Das ist eine Info-Nachricht aus dem main.py-Skript.")
