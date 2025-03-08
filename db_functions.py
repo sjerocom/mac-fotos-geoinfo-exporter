@@ -1,29 +1,33 @@
+# db_functions.py
 import sqlite3
 import os
 from functions import load_config
+import logger  # Importiere den Logger
 
+# Logger instanziieren
+log = logger.setup_logger()
 
 def initialize_db():
     config = load_config()  # Konfiguration laden
     db_path = config['database_path']
     mode = config['mode']
 
-    # Debugging-Ausgabe
-    print(f"Running in {mode} mode")  # Zeigt den aktuellen Modus an
-    print(f"Database path: {db_path}")  # Zeigt den Pfad zur Datenbank an
+    # Logger-Ausgabe
+    log.info(f"Running in {mode} mode")  # Zeigt den aktuellen Modus an
+    log.info(f"Database path: {db_path}")  # Zeigt den Pfad zur Datenbank an
 
     # Stelle sicher, dass der "data" Ordner existiert
     if not os.path.exists('data'):
         os.makedirs('data')
-        print("Created 'data' directory.")  # Ordner 'data' wurde erstellt
+        log.info("Created 'data' directory.")  # Ordner 'data' wurde erstellt
 
     # Testmodus: Lösche die DB und erstelle sie neu
     if mode == 'test':
         if os.path.exists(db_path):
             os.remove(db_path)
-            print(f"Database {db_path} removed for testing purposes.")  # Zeigt, dass die DB gelöscht wurde
+            log.info(f"Database {db_path} removed for testing purposes.")  # Zeigt, dass die DB gelöscht wurde
         else:
-            print(f"Database {db_path} does not exist. No need to remove.")
+            log.info(f"Database {db_path} does not exist. No need to remove.")
 
     # Verbindung zur Datenbank herstellen
     conn = sqlite3.connect(db_path)
@@ -45,9 +49,8 @@ def initialize_db():
     conn.commit()
     conn.close()
 
-    print(f"Database initialized at {db_path}")
+    log.info(f"Database initialized at {db_path}")
 
-# Beispiel für das Hinzufügen von Fotos zu DB
 def insert_photo(date, lat, long, location, country):
     config = load_config()
     db_path = config['database_path']
@@ -65,4 +68,4 @@ def insert_photo(date, lat, long, location, country):
     conn.commit()
     conn.close()
 
-    print(f"Photo data inserted: {date}, {lat}, {long}, {location}, {country}")
+    log.info(f"Photo data inserted: {date}, {lat}, {long}, {location}, {country}")
