@@ -1,2 +1,2 @@
-mode: "prod"  # Alternativ "test", "prod"
+mode: "dev"  # Alternativ "test", "dev", "prod"
 database_path: "data/photos.db"  # Pfad zur SQLite3-Datenbank
