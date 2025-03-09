@@ -2,6 +2,7 @@
 import logger  # Importiere den Logger
 import sqlite3
 import yaml
+import geo_functions
 import random
 from faker import Faker
 fake = Faker()  # Initialisiere den Faker-Generator
@@ -14,6 +15,8 @@ def load_config(config_path="config.yaml"):
         config = yaml.safe_load(file)
     return config
 
+config = load_config()
+db_path = config['database_path']
 
 # Funktion zum Hinzufügen von zufälligen Einträgen, die die bestehende insert_photo verwenden
 def insert_random_entries(num_entries):
@@ -50,3 +53,25 @@ def insert_photo(date, lat, long, location, country):
     conn.close()
 
     log.info(f"Photo data inserted: {date}, {lat}, {long}, {location}, {country}")
+
+
+def create_test_entries():
+        insert_random_entries(5)
+
+        # Beispiel 1: Adresse zu Latitude und Longitude
+        address = "Brandenburger Tor"
+        city = "Berlin"
+        postcode = "10117"
+        country = "Germany"
+
+        # Aufruf der Funktion get_lat_long
+        lat, long = geo_functions.get_lat_long(address, city, postcode, country, db_path)
+        log.info(f"Adresse: {address}, {city}, {postcode}, {country} -> Latitude: {lat}, Longitude: {long}")
+
+        # Beispiel 2: Latitude und Longitude zu Ort und Land
+        lat_test = 52.5163
+        long_test = 13.3777
+
+        # Aufruf der Funktion get_address_from_coords
+        city, country = geo_functions.get_address_from_coords(lat_test, long_test, db_path)
+        log.info(f"Koordinaten: ({lat_test}, {long_test}) -> Stadt: {city}, Land: {country}")
