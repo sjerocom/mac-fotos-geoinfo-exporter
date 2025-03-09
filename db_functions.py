@@ -27,6 +27,25 @@ def create_db(db_path):
     )
     ''')
 
+    # Erstelle Tabellen für Adresse -> Lat/Long und Lat/Long -> Adresse
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS address_to_coords (
+        address TEXT PRIMARY KEY,
+        lat REAL,
+        long REAL
+    )
+    ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS coords_to_address (
+        lat REAL,
+        long REAL,
+        city TEXT,
+        country TEXT,
+        PRIMARY KEY (lat, long)
+    )
+    ''')
+
     # Änderungen speichern und Verbindung schließen
     conn.commit()
     conn.close()
