@@ -1,3 +1,20 @@
-# created by virtualenv automatically
-.venv/bin
-/data/*
+# Ignoriere das .venv-Verzeichnis (virtuelle Umgebung)
+.venv/
+
+# Ignoriere das data-Verzeichnis
+data/
+
+# Falls du irgendwelche Log-Dateien ignorieren möchtest, kannst du auch Folgendes hinzufügen:
+*.log
+
+# Ignoriere Konfigurationsdateien für Editoren wie IDEs (z. B. PyCharm)
+.idea/
+
+# Ignoriere Python-Bytecode-Dateien
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignoriere andere temporäre Dateien wie die von macOS oder Windows
+.DS_Store
+Thumbs.db
