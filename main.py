@@ -17,4 +17,4 @@ if __name__ == "__main__":
 
     # Wenn im Test/Devmodus, fügen wir 5 zufällige Einträge hinzu
     if mode in ['test','dev']:
-        db_functions.insert_random_entries(5)
+        functions.insert_random_entries(5)
