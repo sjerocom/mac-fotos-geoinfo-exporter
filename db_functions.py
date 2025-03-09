@@ -19,11 +19,13 @@ def create_db(db_path):
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS photos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        filename TEXT,
         date TEXT,
         lat REAL,
         long REAL,
-        location TEXT,
-        country TEXT
+        city TEXT,
+        country TEXT,
+        address TEXT
     )
     ''')
 
@@ -42,6 +44,7 @@ def create_db(db_path):
         long REAL,
         city TEXT,
         country TEXT,
+        address TEXT,
         PRIMARY KEY (lat, long)
     )
     ''')

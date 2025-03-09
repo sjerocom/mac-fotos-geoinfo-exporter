@@ -1,12 +1,13 @@
 import logger
 import db_functions
 import functions
-import geo_functions
+import photos_functions
 
 # config.yaml Laden
 config = functions.load_config()
 mode = config['mode']
 db_path = config['database_path']
+photos_to_get_from_library = config['photos_to_get_from_library']
 
 # Logger verwenden
 log = logger.setup_logger()  # Hier ändern wir den Namen von 'logger' auf 'log'
@@ -15,8 +16,7 @@ log = logger.setup_logger()  # Hier ändern wir den Namen von 'logger' auf 'log'
 db_functions.initialize_db()
 
 if __name__ == "__main__":
-    # Beispiel-Daten einfügen (kann später durch echte Foto-Daten ersetzt werden)
 
-    # Wenn im Test/Devmodus, fügen wir 5 zufällige Einträge hinzu
-    if mode in ['test','dev']:
-        functions.create_test_entries()
+    photos_functions.get_photos(photos_to_get_from_library)
+
+
