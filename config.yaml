@@ -1,5 +1,5 @@
-mode: "test"  # Alternativ "test", "dev", "prod"
+mode: "prod"  # Alternativ "test", "dev", "prod"
 database_path: "data/sqlite3.db"
 apple_photos_db: "~/Pictures/Photos Library.photoslibrary/database/Photos.sqlite"
 
-photos_to_get_from_library: "20"
+photos_to_get_from_library: "1000"
