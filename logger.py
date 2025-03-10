@@ -1,18 +1,13 @@
 # logger.py
 import logging
+import sys
 import colorlog
 
 # Logger konfigurieren
 def setup_logger():
-    # Erstelle einen Logger
     logger = logging.getLogger(__name__)
-
-    # Verhindere, dass Handler mehrfach hinzugefügt werden
     if not logger.hasHandlers():
-        # Setze das Log-Level (kann angepasst werden: DEBUG, INFO, WARNING, ERROR, CRITICAL)
         logger.setLevel(logging.DEBUG)
-
-        # Erstelle ein Format für die Ausgabe (mit Farbe)
         formatter = colorlog.ColoredFormatter(
             '%(log_color)s%(asctime)s - %(levelname)s - %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S',
@@ -24,12 +19,8 @@ def setup_logger():
                 'CRITICAL': 'bold_red',
             }
         )
-
-        # Erstelle einen StreamHandler, um die Logs in der Konsole anzuzeigen
-        ch = logging.StreamHandler()
+        # Hier wird sys.stdout verwendet:
+        ch = logging.StreamHandler(sys.stdout)
         ch.setFormatter(formatter)
-
-        # Füge den Handler zum Logger hinzu
         logger.addHandler(ch)
-
     return logger

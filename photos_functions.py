@@ -4,7 +4,7 @@ import logger  # Der Logger wird importiert
 import yaml
 import functions
 import geo_functions
-import photos_functions
+from tqdm import tqdm
 
 # Logger initialisieren
 log = logger.setup_logger()
@@ -50,42 +50,41 @@ def get_photos(anzahl: int = 1000):
             AND ZASSET.ZLONGITUDE IS NOT NULL
             AND ZASSET.ZLATITUDE != -180.0 
             AND ZASSET.ZLONGITUDE != -180.0
-    ORDER BY ZASSET.ZDATECREATED ASC  -- Sortierung nach Erstellungsdatum (ältestes Foto zuerst)
+        ORDER BY ZASSET.ZDATECREATED ASC
     """
-
     cursor.execute(query)
     data = cursor.fetchall()
     conn.close()
 
     total = len(data)
     fotos = []
-    processed_count = 0  # Zähler für bearbeitete Fotos
+    processed_count = 0
 
-    # Überprüfen, ob Daten vorhanden sind
     if total > 0:
-        for row in data:
+        pbar = tqdm(data, desc="Bearbeite Datensätze", total=total, dynamic_ncols=True)
+        for row in pbar:
             if processed_count >= anzahl:
-                break  # Wenn wir die gewünschte Anzahl erreicht haben, stoppen wir die Schleife
+                break
 
             filename, date_created, lat, lon = row
-
-            # Überprüfen, ob das Foto bereits in der Datenbank existiert
-            conn = sqlite3.connect(db_path)  # Stelle eine neue Verbindung zur Foto-DB her
+            # Überprüfe, ob das Foto bereits in der Datenbank existiert
+            conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
             cursor.execute("SELECT 1 FROM photos WHERE filename = ?", (filename,))
             existing = cursor.fetchone()
             conn.close()
 
             if existing:
-                continue  # Überspringe dieses Foto, wenn es bereits verarbeitet wurde
+                continue
 
             date_created = functions.convert_apple_timestamp(date_created).strftime("%Y-%m-%d")
             city, country, address = geo_functions.get_address_from_coords(lat, lon, db_path)
 
-            # Extrahierte Informationen anzeigen
-            log.info(f"Bearbeite Datensatz: {filename}")
 
-            # Hier kannst du das Format anpassen oder zusätzliche Verarbeitung vornehmen
+            # Aktualisiere die Fortschrittsanzeige:
+            pbar.set_description(f"{filename}")
+            pbar.set_postfix({'Adresse': address})
+
             fotos.append({
                 'filename': filename,
                 'date_created': date_created,
@@ -97,11 +96,11 @@ def get_photos(anzahl: int = 1000):
             })
 
             insert_photo(filename, date_created, lat, lon, city, country, address)
-            processed_count += 1  # Erhöhe den Zähler für verarbeitete Fotos
+            processed_count += 1
 
-        log.info(f"Verarbeitung abgeschlossen. {processed_count} neue Bilder wurden extrahiert.")
+        tqdm.write(f"Verarbeitung abgeschlossen. {processed_count} neue Bilder wurden extrahiert.")
     else:
-        log.warning("Keine Bilder gefunden, die den Kriterien entsprechen.")
+        tqdm.write("Keine Bilder gefunden, die den Kriterien entsprechen.")
 
     return fotos
 

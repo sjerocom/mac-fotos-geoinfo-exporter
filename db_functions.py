@@ -81,9 +81,6 @@ def initialize_db():
     db_path = config['database_path']
     mode = config['mode']
 
-    # Logger-Ausgabe
-    log.info(f"Running in {mode} mode")  # Zeigt den aktuellen Modus an
-    log.info(f"Database path: {db_path}")  # Zeigt den Pfad zur Datenbank an
 
     # Stelle sicher, dass der "data" Ordner existiert
     if not os.path.exists('data'):
@@ -101,8 +98,5 @@ def initialize_db():
     elif mode == 'prod':
         if not check_db_exists(db_path):
             create_db(db_path)
-        else:
-            log.info(f"Database {db_path} already exists. No action taken.")
 
-    log.info(f"Database initialization complete at {db_path}")
 
